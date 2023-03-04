@@ -35,15 +35,14 @@ app.get('/api/movies', async (req,res) =>{
 })
 
 app.post('/api/removeMovie', async (req, res) => {
+
     const client = new MongoClient('mongodb://127.0.0.1:27017');
     await client.connect();
  
     const db = client.db('movie-data');
-    const result = await db.collection('movies').deleteOne({"title":req.body.title, 
-    "release": req.body.release, 
-    "actors": req.body.actors, 
-    "rating": req.body.rating, 
-    "image": req.body.image})
+    const result = await db.collection('movies').deleteOne({title: req.body.title})
+
+    res.send("Good!");
 
  })
 
@@ -63,17 +62,6 @@ app.post('/api/review', upload.single('movie_poster'), async (req,res) => {
     console.log(insertOperation);
     res.redirect('/');
 })
-
-const saveData = () => {
-    const jsonContent = JSON.stringify(movieData);
-    fs.writeFile("./movies.json", jsonContent, "utf8", function (err) {
-        if (err){
-            console.log("An error occured while writing JSON Object to File")
-        }
-        console.log("JSON file has been saved")
-    })
-    
-}
 
 app.listen(port, () =>{
     console.log(`App is listening to ${port}`)
